@@ -22,13 +22,18 @@ namespace MyApi.Controllers
             _context = dbContext;
             this.Players.Add(new Player("Player"));
         }
-
+        //GET
         [HttpGet]
+        [Route("/GetPlayer")]
         public async Task<IActionResult> Get() // recuperation de notre Player
         {
             return Ok(await _context.Players.ToListAsync());
         }
+
+
+        //POST
         [HttpPost]
+        [Route("/PostPlayer")]
         public async Task<ActionResult<List<Player>>> CreateEntity(Player player)
         {
 
@@ -36,8 +41,11 @@ namespace MyApi.Controllers
             await _context.SaveChangesAsync();
             return Ok(player);
         }
+
+        //PUT
         [HttpPut]
-        public async Task<ActionResult<List<Player>>> UpdateHero(Player request)
+        [Route("/PutPlayer")]
+        public async Task<ActionResult<List<Player>>> UpdatePlayer(Player request)
         {
             var player = Players.Find(player => player.ID == request.ID);
             if (player == null)
@@ -57,6 +65,22 @@ namespace MyApi.Controllers
             await _context.SaveChangesAsync();
             return Ok(player);
 
+        }
+        
+        //DELETE
+        [HttpDelete]
+        [Route("/DeletePlayer")]
+        public async Task<ActionResult<List<Player>>> DeletePlayer( Player request)
+        {
+            Player? player = await _context.Players.FirstOrDefaultAsync();
+            if (player == null)
+            {
+                return NotFound("Your Player was not Found");
+            }
+            _context.Remove(player);
+
+            await _context.SaveChangesAsync();
+            return Ok("The " + player.name + " has been deleted !");
         }
 
     }

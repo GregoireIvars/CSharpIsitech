@@ -23,12 +23,18 @@ namespace MyApi.Controllers
 
         }
 
+
+        //GET Permet de regarder combien d'entity on a dans notre BDD
         [HttpGet]
+        [Route("/GETEntity")]
         public async Task<IActionResult> Get() // recuperation de notre Player
         {
             return Ok(await _context.Entitys.ToListAsync());
         }
+
+        //POST Permet d'ajouté une Entity dans notre BDD
         [HttpPost]
+        [Route("/PostEntity")]
         public async Task <ActionResult<List<Entity>>> CreateEntity( Entity entity)
         {
 
@@ -36,8 +42,11 @@ namespace MyApi.Controllers
             await _context.SaveChangesAsync();
             return Ok(entity);
         }
+
+        //PUT 
         [HttpPut]
-        public async Task<ActionResult<List<Entity>>> UpdateHero(Entity request)
+        [Route("/PutEntity")]
+        public async Task<ActionResult<List<Entity>>> UpdateEntity(Entity request)
         {
             var entity = Entitys.Find(entity => entity.ID == request.ID);
             if (entity == null)
@@ -53,6 +62,22 @@ namespace MyApi.Controllers
             await _context.SaveChangesAsync();
             return Ok(entity);
            
+        }
+
+        //DELETE
+        [HttpDelete]
+        [Route("/DeleteEntity")]
+        public async Task<ActionResult<List<Entity>>> DeleteEntity(Entity request)
+        {
+            Entity? entity = await _context.Entitys.FirstOrDefaultAsync();
+            if (entity == null)
+            {
+                return NotFound("Your Entity was not Found");
+            }
+            _context.Remove(entity);
+
+            await _context.SaveChangesAsync();
+            return Ok("The " + entity.name + " has been deleted !");
         }
     }
 }

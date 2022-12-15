@@ -25,6 +25,7 @@ namespace MyApi.Controllers
         }
         //GET
         [HttpGet]
+        [Route("/GETMonster")]
         public async Task<IActionResult> Get() // recuperation de notre Player
         {
             return Ok(await _context.Monsters.ToListAsync());
@@ -32,6 +33,7 @@ namespace MyApi.Controllers
 
         //Post
         [HttpPost]
+        [Route("/PostMonster")]
         public async Task<ActionResult<List<Monster>>> CreateEntity(Monster monster)
         {
 
@@ -42,6 +44,7 @@ namespace MyApi.Controllers
 
         //PUT
         [HttpPut]
+        [Route("/PutMonster")]
         public async Task<ActionResult<List<Monster>>> UpdateHero(Monster request)
         {
             var monster = Monsters.Find(monster => monster.ID == request.ID);
@@ -60,6 +63,21 @@ namespace MyApi.Controllers
             await _context.SaveChangesAsync();
             return Ok(monster);
 
+        }
+        //DELETE
+        [HttpDelete]
+        [Route("/DeleteMonster")]
+        public async Task<ActionResult<List<Monster>>> DeletePlayer(Monster request)
+        {
+            Monster? monster = await _context.Monsters.FirstOrDefaultAsync();
+            if (monster == null)
+            {
+                return NotFound("Your Monster was not Found");
+            }
+            _context.Remove(monster);
+
+            await _context.SaveChangesAsync();
+            return Ok("The " + monster.name + " has been deleted !");
         }
     }
 }
